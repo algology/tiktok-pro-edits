@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Callback</title>
+    <script>
+      window.onload = function () {
+        // Extract the authorization code from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (code) {
+          // Send the authorization code to your server to exchange for an access token
+          fetch("/handle-auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code: code }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Redirect to the main page or show a success message
+                window.location.href = "/";
+              } else {
+                console.error("Authorization failed", data.error);
+              }
+            })
+            .catch((error) => console.error("Error:", error));
+        } else {
+          console.error("No authorization code found");
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <h1>OAuth Callback</h1>
+    <p>Processing authentication...</p>
+  </body>
+</html>
